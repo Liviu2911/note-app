@@ -23,7 +23,7 @@ function Notes({ username, notes }: Props) {
         <form
           action={async () => {
             "use server"
-            return redirect("/?message=add note")
+            redirect("/?message=add note")
           }}
         >
           <button

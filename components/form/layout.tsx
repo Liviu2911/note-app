@@ -1,7 +1,7 @@
 import { signin, signup } from "@/actions"
 import React from "react"
 import Heading from "./heading"
-import Input from "./input"
+import Input from "../input"
 import Submit from "./submit"
 import Link from "./link"
 
@@ -20,9 +20,9 @@ function FormLayout({ register, message }: Props) {
         <Heading text={register ? "Sign Up" : "Login"} />
 
         <div className="flex flex-col gap-10">
-          <Input type="email" />
-          {register && <Input type="username" />}
-          <Input type="password" />
+          <Input name="email" />
+          {register && <Input name="username" />}
+          <Input name="password" />
         </div>
 
         <Submit text={register ? "Sign Up" : "Login"} />

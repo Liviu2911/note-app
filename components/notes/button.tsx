@@ -13,7 +13,8 @@ function Button({ variant, id }: Props) {
     <form
       action={async () => {
         "use server"
-        return variant === "delete" ? deleteNote(id) : updateNote(id)
+        if (variant === "edit") return updateNote(id)
+        return deleteNote(id)
       }}
     >
       <button

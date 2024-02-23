@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation"
 import { SignUpSchema } from "./schemas"
-import { pb } from "./pocketbase"
+import { currentUser, pb } from "./pocketbase"
+import { revalidatePath } from "next/cache"
 
 export const signin = async (formData: FormData, error?: string) => {
   if (error) {
@@ -68,7 +69,42 @@ export const signout = async () => {
 }
 
 export const deleteNote = async (id: string) => {
-  await pb.collection("users").delete(id)
+  try {
+    await pb.collection("notes").delete(id)
+    revalidatePath("/")
+  } catch (err) {
+    console.log(err)
+  }
+  redirect("/")
 }
 
-export const updateNote = async (id: string) => {}
+export const updateNote = async (id: string) => {
+  redirect(`/?message=edit note&id=${id}`)
+}
+
+export const saveChanges = async (id: string, formData: FormData) => {
+  const title = formData.get("title") as string
+  const content = formData.get("content") as string
+
+  try {
+    await pb.collection("notes").update(id, {
+      title,
+      content,
+    })
+    revalidatePath("/")
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const addNote = async (formData: FormData) => {
+  const title = formData.get("title") as string
+  const content = formData.get("content") as string
+  const newNote = { title, content, user: [currentUser?.id] }
+  try {
+    await pb.collection("notes").create(newNote)
+    revalidatePath("/")
+  } catch (err) {
+    console.log(err)
+  }
+}
